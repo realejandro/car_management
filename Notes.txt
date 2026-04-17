@@ -1,0 +1,5 @@
+This is just a file to write about my project:
+
+
+I am running the project usning -> flask --app app --debug run 
+to create an autoload app
