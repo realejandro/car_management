@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
+.env
+
+# Flask
+instance/
+.webassets-cache
+
+# Database
+*.db
+*.sqlite3
+
+# Migrations (optional - depends on team)
+migrations/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
