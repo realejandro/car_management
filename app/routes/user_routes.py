@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from app import db, bcrypt
 from app.models.user import User
 from app.models.car import Car
+
+
 user_bp = Blueprint("users", __name__)
 
 @user_bp.route("", methods= ['GET'])

@@ -1,12 +1,17 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models.sale import Sale
-from models.car import Car
+from app.models.sale import Sale
+from app.models.car import Car
 from app import db
 
 sales_bp = Blueprint("sales", __name__)
 
-@sales_bp.route("/create", methods=["POST"])
+@sales_bp.route("", methods= ["GET"])
+def get_sales():
+    sales = db.session.execute(db.select(Sale)).scalars().all()
+    return jsonify([s.to_dict() for s in sales])
+
+@sales_bp.route("/sell", methods=["POST"])
 @jwt_required()
 def create_sale():
     data = request.get_json()
