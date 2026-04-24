@@ -18,7 +18,7 @@ def all_users():
     return jsonify([ user.to_dict() for user in users ])
 
 
-@user_bp.route("", methods = ['POST'])
+@user_bp.route("/register", methods = ['POST'])
 def create_user():
     data = request.get_json()
 
@@ -47,14 +47,7 @@ def create_user():
 
         return jsonify({
             "message": "user created successfully",
-            "user": {
-                "id": new_user.id,
-                "name": new_user.name,
-                "username": new_user.username,
-                "email": new_user.email,
-                "password": new_user.password,
-                "cars": [car.to_dict() for car in new_user.cars]
-            }
+            "user": new_user.to_dict()
         }), 201
 
     except Exception as e:
