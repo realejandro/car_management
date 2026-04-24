@@ -49,21 +49,14 @@ def create_car():
     
         return jsonify({
             "message": "Car created successfully",
-            "car": {
-                "id": new_car.id,
-                "brand": new_car.brand,
-                "model": new_car.model,
-                "year": new_car.year,
-                "price": new_car.price
-                
-            }
+            "car": new_car.to_dict()
         }), 201
     
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
     
-@car_bp.route("/delete/<int:car_id>", methods=["DELETE"])
+@car_bp.route("/<int:car_id>", methods=["DELETE"])
 @jwt_required()
 def delete_car(car_id):
     car = Car.query.get(car_id)

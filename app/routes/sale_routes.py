@@ -6,14 +6,13 @@ from app import db
 
 sales_bp = Blueprint("sales", __name__)
 
-@sales_bp.route("", methods= ["GET"])
-def get_sales():
-    sales = db.session.execute(db.select(Sale)).scalars().all()
-    return jsonify([s.to_dict() for s in sales])
-
-@sales_bp.route("/sell", methods=["POST"])
+@sales_bp.route("", methods=["GET", "POST"])
 @jwt_required()
 def create_sale():
+    if request.method != "POST":
+        sales = db.session.execute(db.select(Sale)).scalars().all()
+        return jsonify([s.to_dict() for s in sales])
+
     data = request.get_json()
 
     if not data:
@@ -24,7 +23,7 @@ def create_sale():
         car_id = data["car_id"]
         sold_price = data["sold_price"]
 
-        car = Car.query.get(car_id)
+        car = db.session.get(Car, int(car_id) )
 
         if not car:
             return jsonify({"error": "Car not found"}), 404
@@ -42,7 +41,6 @@ def create_sale():
             commission=commission,
             user_id=user_id,
             car_id=car_id,
-            
         )
 
         # update car status
@@ -53,14 +51,7 @@ def create_sale():
 
         return jsonify({
             "message": "Sale created successfully",
-            "sale": {
-                "id": new_sale.id,
-                "buyer_name": new_sale.buyer_name,
-                "sold_price": float(new_sale.sold_price),
-                "commission": float(new_sale.commission),
-                "car_id": new_sale.car_id,
-                "user_id": new_sale.user_id
-            }
+            "sale": new_sale.to_dict()
         }), 201
 
     except KeyError as e:

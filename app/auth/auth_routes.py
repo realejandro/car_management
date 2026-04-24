@@ -4,10 +4,10 @@ from flask_jwt_extended import create_access_token
 from app import bcrypt
 from app import db
 
-login_bp = Blueprint("login", __name__)
+auth_bp = Blueprint("login", __name__)
 
 
-@login_bp.route("", methods = ['POST'])
+@auth_bp.route("login", methods = ['POST'])
 def login():
     data = request.get_json()
     # we are using the flask-sqlAlchemy documentation
@@ -32,4 +32,3 @@ def login():
         }
     })
     
-    # user = User.query.filter_by(email = data["email"]).first()

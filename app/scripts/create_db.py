@@ -1,7 +1,5 @@
 from app import create_app, db
-from app.models.car import Car
-from app.models.user import User
-from app.models.sale import Sale
+from app.models import User, Car, Sale
 
 
 app = create_app()
