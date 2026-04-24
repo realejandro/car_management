@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app import db, bcrypt
 from app.models.user import User
-from app.models.car import Car
+##from app.models.car import Car
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.user_services import permited_roles
 
@@ -62,7 +62,7 @@ def create_user():
         return jsonify({"error": str(e)}), 500
     
 
-@user_bp.route("/delete/<int:user_id>", methods=["DELETE"])
+@user_bp.route("/<int:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_user_by_id(user_id):
     #check if user is an admin
