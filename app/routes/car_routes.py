@@ -3,6 +3,12 @@ from app import db
 from app.models.car import Car
 from app.models.user import User
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.validators.car_validator import validate_car_data
+import logging
+
+## creating logging
+logging.basicConfig(level=logging.INFO)
+
 
 car_bp = Blueprint("cars", __name__)  
 
@@ -10,8 +16,22 @@ car_bp = Blueprint("cars", __name__)
 # code into reusable modules instead of putting everything in one big file
 @car_bp.route("", methods=['GET'])
 def all_cars():
-    cars = Car.query.all()
-    if len(cars) == 0:
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 10, type=int)
+
+    cars_query = db.select(Car)
+
+
+    cars = db.paginate(
+        cars_query,
+        page=page,
+        per_page=per_page,
+        error_out=False
+    )
+
+    
+
+    if not cars.items:
         return jsonify({
             "message": "There are no cars"
         }), 404
@@ -33,6 +53,14 @@ def create_car():
     if not data:
         return jsonify( { "error ": "No input data provided" }), 400
     
+    errors = validate_car_data(data)
+
+    if errors:
+        return jsonify({
+            "message":"Validation error",
+            "errors": errors
+        }), 400
+    
     try: 
         new_car = Car(
             brand= data["brand"],
@@ -46,6 +74,7 @@ def create_car():
 
         db.session.add(new_car)
         db.session.commit()
+        logging.info("Car created")
     
         return jsonify({
             "message": "Car created successfully",
@@ -82,7 +111,7 @@ def delete_car(car_id):
 def update_car(car_id):
     data = request.get_json()
     user_id = int(get_jwt_identity())
-    
+   
     if not data:
         return jsonify({
             "error": "Not input Data provided"

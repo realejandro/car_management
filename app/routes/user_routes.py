@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 from app import db, bcrypt
 from app.models.user import User
-##from app.models.car import Car
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.user_services import permited_roles
+
 
 user_bp = Blueprint("users", __name__)
 
